@@ -1,0 +1,11 @@
+Database(Postgres)
+   ||
+Migration
+   ||
+Model
+   ||
+Controller
+   ||
+Routes
+   ||
+Rest API (Json Response)

@@ -6,9 +6,9 @@ services:
     container_name: postgres_db
     restart: always
     environment:
-      POSTGRES_USER: root
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: test_db
+      POSTGRES_USER: root    # Default PostgreSQL username
+      POSTGRES_PASSWORD: password # Default PostgreSQL password
+      POSTGRES_DB: test_db  # Default PostgreSQL database name
     ports:
       - "5432:5432"
     volumes:
