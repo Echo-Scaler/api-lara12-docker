@@ -42,6 +42,17 @@ class PostController extends Controller
     public function store(Request $request)
     {
         // dd($request->all());
+        $validator = validator($request->all(), [
+            'title' => 'required|string|max:255',
+            'content' => 'required|string',
+        ]);
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'Validation failed',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
         try {
             $post = Post::create(([
                 'title' => $request->title,
@@ -60,6 +71,20 @@ class PostController extends Controller
 
     public function update(Request $request, $id)
     {
+        $validator = validator($request->all(), [
+            'title' => 'required|string|max:255',
+            'content' => 'required|string',
+        ], [
+            'title.required' => 'Title is required',  // custom error message
+            'content.required' => 'Content is required',
+        ]);
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'Validation failed',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
         $post = Post::find($id);
         if (!$post) {
             return response()->json([
