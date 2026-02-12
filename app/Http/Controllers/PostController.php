@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\PostResource;
 use App\Models\Post;
 use Illuminate\Http\Request;
 
@@ -14,7 +15,7 @@ class PostController extends Controller
             // dd($posts);
             return response()->json([
                 'message' => 'Posts retrieved successfully',
-                'posts' => $posts
+                'posts' => PostResource::collection($posts)  // use for all data
             ], 200);
         } catch (\Exception $e) {
             return response()->json([
@@ -29,7 +30,7 @@ class PostController extends Controller
             $post = Post::find($id);
             return response()->json([
                 'message' => 'Post retrieved successfully',
-                'post' => $post
+                'post' => PostResource::make($post)  // use for single data
             ], 200);
         } catch (\Exception $e) {
             return response()->json([
@@ -48,7 +49,7 @@ class PostController extends Controller
             ]));
             return response()->json([
                 'message' => 'Post created successfully',
-                'post' => $post
+                'post' => PostResource::make($post)  // use for single data
             ], 201);
         } catch (\Exception $e) {
             return response()->json([
