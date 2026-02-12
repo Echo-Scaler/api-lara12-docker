@@ -9,39 +9,52 @@ class PostController extends Controller
 {
     public function index()
     {
-        $posts = Post::all();
-        // dd($posts);
-        return response()->json([
-            'message' => 'Posts retrieved successfully',
-            'posts' => $posts
-        ], 200);
+        try {
+            $posts = Post::all();
+            // dd($posts);
+            return response()->json([
+                'message' => 'Posts retrieved successfully',
+                'posts' => $posts
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Error: ' . $e->getMessage()
+            ], 500);
+        }
     }
 
     public function show($id)
     {
-        $post = Post::find($id);
-        if (!$post) {
+        try {
+            $post = Post::find($id);
             return response()->json([
-                'message' => 'Post not found'
-            ], 404);
+                'message' => 'Post retrieved successfully',
+                'post' => $post
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Error: ' . $e->getMessage()
+            ], 500);
         }
-        return response()->json([
-            'message' => 'Post retrieved successfully',
-            'post' => $post
-        ], 200);
     }
 
     public function store(Request $request)
     {
         // dd($request->all());
-        $post = Post::create(([
-            'title' => $request->title,
-            'content' => $request->content
-        ]));
-        return response()->json([
-            'message' => 'Post created successfully',
-            // 'post' => $post
-        ], 201);
+        try {
+            $post = Post::create(([
+                'title' => $request->title,
+                'content' => $request->content
+            ]));
+            return response()->json([
+                'message' => 'Post created successfully',
+                'post' => $post
+            ], 201);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Error: ' . $e->getMessage()
+            ], 500);
+        }
     }
 
     public function update(Request $request, $id)
