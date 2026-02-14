@@ -15,7 +15,8 @@ class PostController extends Controller
             // dd($posts);
             return response()->json([
                 'message' => 'Posts retrieved successfully',
-                'posts' => PostResource::collection($posts)  // use for all data
+                // response format (customize) use resource
+                'posts' => PostResource::collection($posts)  // use for all data response format
             ], 200);
         } catch (\Exception $e) {
             return response()->json([
@@ -42,16 +43,20 @@ class PostController extends Controller
     public function store(Request $request)
     {
         // dd($request->all());
-        $validator = validator($request->all(), [
-            'title' => 'required|string|max:255',
-            'content' => 'required|string',
-        ]);
-        if ($validator->fails()) {
-            return response()->json([
-                'message' => 'Validation failed',
-                'errors' => $validator->errors()
-            ], 422);
-        }
+
+        // use Request for validation in separate file (PostStoreRequest.php)
+        // use custom request validation
+
+        // $validator = validator($request->all(), [
+        //     'title' => 'required|string|max:255',
+        //     'content' => 'required|string',
+        // ]);
+        // if ($validator->fails()) {
+        //     return response()->json([
+        //         'message' => 'Validation failed',
+        //         'errors' => $validator->errors()
+        //     ], 422);
+        // }
 
         try {
             $post = Post::create(([
