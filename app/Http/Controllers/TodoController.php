@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\TodoResource;
 use App\Models\Todo;
 use Illuminate\Http\Request;
 
@@ -17,7 +18,7 @@ class TodoController extends Controller
             // dd($todos);
             return response()->json([
                 'message' => 'Todos retrieved successfully',
-                'todos' => $todos
+                'todos' => TodoResource::collection($todos)  // need to call resource collection Todo
             ], 200);
         } catch (\Exception $e) {
             return response()->json([
@@ -37,6 +38,26 @@ class TodoController extends Controller
         //     'description' => 'nullable|string',
         //     'status' => 'required|in:pending,in_progress,completed',
         // ]);
+
+        $validator = validator(
+            $request->all(),
+            [
+                'title' => 'required|string|max:255',
+                'description' => 'nullable|string|max:255',
+                'status' => 'required|in:pending,in_progress,completed',
+            ], [
+                'title.required' => 'Title is required',
+                'description.max' => 'Description must not be greater than 255 characters',
+                'status.in' => 'Status must be pending, in_progress, or completed',
+            ]
+        );
+
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'Validation failed',
+                'errors' => $validator->errors()
+            ], 422);
+        }
 
         try {
             $todo = Todo::create([
@@ -65,7 +86,7 @@ class TodoController extends Controller
         $todo = Todo::find($id);
         return response()->json([
             'message' => 'Todo retrieved successfully',
-            'todo' => $todo  // use for single data
+            'todo' => TodoResource::make($todo)  // use for single data
         ], 200);
         return response()->json([
             'message' => 'Error: ' . $e->getMessage()
@@ -85,12 +106,22 @@ class TodoController extends Controller
             //     'description' => 'nullable|string',
             //     'status' => 'required|in:pending,in_progress,completed',
             // ]);
-
+            $validator = validator($request->all(), [
+                'title' => 'required|string|max:255',
+                'description' => 'nullable|string|max:255',
+                'status' => 'required|in:pending,in_progress,completed',
+            ]);
+            if ($validator->fails()) {
+                return response()->json([
+                    'message' => 'Validation failed',
+                    'errors' => $validator->errors()
+                ], 422);
+            }
             $todo = Todo::find($id);
             if (!$todo) {
                 return response()->json([
                     'message' => 'Todo not found',
-                    // 'id' => $id
+                    ''
                 ], 404);
             }
 
